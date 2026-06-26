@@ -62,33 +62,7 @@ Output JSON:
     return prompt
 
 
-def build_prompt_zeroshot_norag(text, contesto):
-    # Zero-shot prompt without retrieval: no examples, just the instruction
-    prompt = f"""Quali sono gli assunti impliciti del testo? Sulla base dei presupposti impliciti, il testo è misogino? Rispondere solo con SÌ o NO. Restituisci SOLO JSON valido.
-Testo: {text}
-Contesto: {contesto}
-Output JSON:
-{{
-  "testo": "{text}",
-  "assunto_implicito": "scrivi qui",
-  "risposta": "SÌ | NO"
-}}"""
-    return prompt
 
-
-def build_prompt_zeroshot_rag(text, contesto, retrieved):
-    # Zero-shot prompt with retrieval: instruction + retrieved knowledge, no examples
-    prompt = f"""Quali sono gli assunti impliciti del testo? Sulla base dei presupposti impliciti, il testo è misogino? Rispondere solo con SÌ o NO. Restituisci SOLO JSON valido. Considera anche la conoscenza fornita se presente.
-Testo: {text}
-Contesto: {contesto}
-Conoscenza: {retrieved}
-Output JSON:
-{{
-  "testo": "{text}",
-  "assunto_implicito": "scrivi qui",
-  "risposta": "SÌ | NO"
-}}"""
-    return prompt
 
 
 def call_model(model, tokenizer, prompt, temperature, max_tokens):
@@ -131,7 +105,7 @@ def main():
     )
     ap.add_argument("--input-csv", required=True, help="Input CSV with text, context and retrieval columns")
     ap.add_argument("--out-csv", required=True, help="Output CSV path")
-    ap.add_argument("--mode", required=True, choices=["fewshot", "zeroshot"], help="Prompting strategy")
+    ap.add_argument("--mode", required=True, default="fewshot", help="Prompting strategy")
     ap.add_argument("--model-id", default="meta-llama/Llama-3.1-8B-Instruct", help="HuggingFace model ID")
     ap.add_argument("--dtype", default="bfloat16", choices=["float16", "bfloat16"], help="Model precision")
     ap.add_argument("--temperature", type=float, default=0.3, help="Sampling temperature")
@@ -166,12 +140,10 @@ def main():
         retrieved = safe_str(row.get("retrieval_compressed", ""))
 
         # Build prompts for both RAG and no-RAG conditions
-        if args.mode == "fewshot":
-            prompt_rag = build_prompt_fewshot_rag(text, contesto, retrieved)
-            prompt_no = build_prompt_fewshot_norag(text, contesto)
-        else:
-            prompt_rag = build_prompt_zeroshot_rag(text, contesto, retrieved)
-            prompt_no = build_prompt_zeroshot_norag(text, contesto)
+        
+        prompt_rag = build_prompt_fewshot_rag(text, contesto, retrieved)
+        prompt_no = build_prompt_fewshot_norag(text, contesto)
+        
 
         raw_rag = call_model(model, tokenizer, prompt_rag, args.temperature, args.max_new_tokens)
         raw_no = call_model(model, tokenizer, prompt_no, args.temperature, args.max_new_tokens)
