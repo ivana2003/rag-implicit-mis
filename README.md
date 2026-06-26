@@ -15,9 +15,8 @@ We propose a Retrieval Augmented Generation (RAG) framework for detecting and ex
 │   └── annotation_eng_by_kb_final.xlsx   # Final English annotation file (faithfulness + human preference)
 ├── code/
 │   ├── generation/
-│   │   ├── run.py                        # LLM inference (few-shot and zero-shot, RAG and no-RAG)
+│   │   ├── run.py                        # LLM inference (few-shot, RAG and no-RAG)
 │   │   ├── job_fewshot.sh                # SLURM job script for few-shot inference
-│   │   └── job_zeroshot.sh               # SLURM job script for zero-shot inference
 │   ├── slang_pipeline.py                 # Slang KB construction and retrieval via Wiktionary
 │   ├── compression.py                    # Semantic compression of retrieved passages
 │   ├── merge.py                          # Merge retrieval outputs into unified datasets
@@ -181,7 +180,6 @@ Via SLURM:
 
 ```bash
 sbatch code/generation/job_fewshot.sh
-sbatch code/generation/job_zeroshot.sh
 ```
 
 ## Analysis
