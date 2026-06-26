@@ -1,21 +1,20 @@
 #!/bin/bash
 # SLURM job script for zero-shot inference
-# Runs run.py in zero-shot mode on the Italian compressed dataset
-# Adjust paths and --model-id as needed before submitting
+# Adjust paths before submitting
 
-#SBATCH --job-name=comp_llama_it_zero_base
+#SBATCH --job-name=rag_implicit_mis_zeroshot
 #SBATCH --partition=gpu
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --gres=gpu:1          # request 1 GPU
+#SBATCH --gres=gpu:1
 #SBATCH --mem=32G
 #SBATCH --time=24:00:00
-#SBATCH --output=/home/3149671/misogyny_compressed/llama_it_baseline/zeroshot_%j.out
-#SBATCH --error=/home/3149671/misogyny_compressed/llama_it_baseline/zeroshot_%j.err
+#SBATCH --output=zeroshot_%j.out
+#SBATCH --error=zeroshot_%j.err
 
-/home/3149671/.conda/envs/olmo/bin/python /home/3149671/misogyny_compressed/llama_it_baseline/run.py \
-  --input-csv /home/3149671/ita_compressed.csv \
-  --out-csv /home/3149671/misogyny_compressed/output/llama_it_zeroshot_baseline.csv \
+python code/generation/run.py \
+  --input-csv /path/to/input.csv \
+  --out-csv /path/to/output.csv \
   --mode zeroshot \
   --model-id meta-llama/Llama-3.1-8B-Instruct \
   --dtype bfloat16
