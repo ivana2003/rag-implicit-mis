@@ -65,16 +65,16 @@ annotation_ita_by_kb_final.xlsx and annotation_eng_by_kb_final.xlsx contain the 
 
 | Column | Description |
 |---|---|
-| *_faithfulness_ARI | Faithfulness score by annotator ARI (0=not grounded, 1=partial, 2=fully grounded) |
-| *_faithfulness_IVANA | Faithfulness score by annotator IVANA |
-| human_preference_ARI | Preferred explanation according to annotator ARI |
-| human_preference_IVANA | Preferred explanation according to annotator IVANA |
+| *_faithfulness_annotator1 | Faithfulness score by annotator1 (0=not grounded, 1=partial, 2=fully grounded) |
+| *_faithfulness_annotator2 | Faithfulness score by annotator2 |
+| human_preference_annotator1 | Preferred explanation according to annotator1 |
+| human_preference_annotator2 | Preferred explanation according to annotator2 |
 
 Human preference values: WIKI, SLANG, LITERATURE, BASELINE, NEITHER, TIE, TIE_X_Y (e.g. TIE_LITERATURE_WIKI).
 
 The 100 annotated instances per language were sampled to maximise retrieval coverage (instances with more knowledge sources available were prioritised).
 
-## Knowldge bases
+## Knowledge bases
 
 ### Wikipedia
 
@@ -215,8 +215,8 @@ Annotation statistics:
 
 ```bash
 python code/annotation_analysis.py \
-  --ann-ari annotation_ari.xlsx \
-  --ann-ivi annotation_ivi.xlsx \
+  --ann-ann1 annotation_ann1.xlsx \
+  --ann-ann2 annotation_ann2.xlsx \
   --output-disagreements disagreements.csv \
   --output-stats stats.csv
 ```
