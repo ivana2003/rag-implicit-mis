@@ -33,8 +33,7 @@ def parse_raw_eng(raw_str):
         return '', ''
 
 
-def build_full_results_ita(norag, wiki, slang, lit, ann=None,
-                            truncated_ids=None):
+def build_full_results_ita(norag, wiki, slang, lit, ann=None, truncated_ids=None):
     df = norag[['id', 'text', 'Contesto']].copy()
 
     df['baseline_assumption'] = norag['raw_NORAG'].apply(lambda x: parse_raw_ita(x)[0])
@@ -67,24 +66,25 @@ def build_full_results_ita(norag, wiki, slang, lit, ann=None,
         df.loc[mask, ['baseline_assumption', 'baseline_label']] = np.nan
 
     if ann is not None:
-        ann_cols = ['id', 'wiki_faithfulness_ARI', 'wiki_faithfulness_IVANA',
-                    'slang_faithfulness_ARI', 'slang_faithfulness_IVANA',
-                    'literature_faithfulness_ARI', 'literature_faithfulness_IVANA',
-                    'baseline_faithfulness_ARI', 'baseline_faithfulness_IVANA',
-                    'human_preference_ARI', 'human_preference_IVANA']
+        ann_cols = ['id',
+                    'wiki_faithfulness_annotator1', 'wiki_faithfulness_annotator2',
+                    'slang_faithfulness_annotator1', 'slang_faithfulness_annotator2',
+                    'literature_faithfulness_annotator1', 'literature_faithfulness_annotator2',
+                    'baseline_faithfulness_annotator1', 'baseline_faithfulness_annotator2',
+                    'human_preference_annotator1', 'human_preference_annotator2']
         df = df.merge(ann[[c for c in ann_cols if c in ann.columns]],
                       on='id', how='left')
 
     ordered = ['id', 'text', 'Contesto',
                'baseline_assumption', 'baseline_label', 'baseline_raw',
-               'baseline_faithfulness_ARI', 'baseline_faithfulness_IVANA',
+               'baseline_faithfulness_annotator1', 'baseline_faithfulness_annotator2',
                'wiki_retrieval', 'wiki_assumption', 'wiki_label', 'wiki_raw',
-               'wiki_faithfulness_ARI', 'wiki_faithfulness_IVANA',
+               'wiki_faithfulness_annotator1', 'wiki_faithfulness_annotator2',
                'slang_retrieval', 'slang_assumption', 'slang_label', 'slang_raw',
-               'slang_faithfulness_ARI', 'slang_faithfulness_IVANA',
+               'slang_faithfulness_annotator1', 'slang_faithfulness_annotator2',
                'lit_retrieval', 'lit_assumption', 'lit_label', 'lit_raw',
-               'literature_faithfulness_ARI', 'literature_faithfulness_IVANA',
-               'human_preference_ARI', 'human_preference_IVANA']
+               'literature_faithfulness_annotator1', 'literature_faithfulness_annotator2',
+               'human_preference_annotator1', 'human_preference_annotator2']
 
     return df[[c for c in ordered if c in df.columns]]
 
@@ -118,24 +118,25 @@ def build_full_results_eng(norag, wiki, slang, lit, ann=None):
                        'raw_output': 'lit_raw'}, inplace=True)
 
     if ann is not None:
-        ann_cols = ['id', 'wiki_faithfulness_ARI', 'wiki_faithfulness_IVANA',
-                    'slang_faithfulness_ARI', 'slang_faithfulness_IVANA',
-                    'literature_faithfulness_ARI', 'literature_faithfulness_IVANA',
-                    'baseline_faithfulness_ARI', 'baseline_faithfulness_IVANA',
-                    'human_preference_ARI', 'human_preference_IVANA']
+        ann_cols = ['id',
+                    'wiki_faithfulness_annotator1', 'wiki_faithfulness_annotator2',
+                    'slang_faithfulness_annotator1', 'slang_faithfulness_annotator2',
+                    'literature_faithfulness_annotator1', 'literature_faithfulness_annotator2',
+                    'baseline_faithfulness_annotator1', 'baseline_faithfulness_annotator2',
+                    'human_preference_annotator1', 'human_preference_annotator2']
         df = df.merge(ann[[c for c in ann_cols if c in ann.columns]],
                       on='id', how='left')
 
     ordered = ['id', 'text',
                'baseline_assumption', 'baseline_label', 'baseline_raw',
-               'baseline_faithfulness_ARI', 'baseline_faithfulness_IVANA',
+               'baseline_faithfulness_annotator1', 'baseline_faithfulness_annotator2',
                'wiki_retrieval', 'wiki_assumption', 'wiki_label', 'wiki_raw',
-               'wiki_faithfulness_ARI', 'wiki_faithfulness_IVANA',
+               'wiki_faithfulness_annotator1', 'wiki_faithfulness_annotator2',
                'slang_retrieval', 'slang_assumption', 'slang_label', 'slang_raw',
-               'slang_faithfulness_ARI', 'slang_faithfulness_IVANA',
+               'slang_faithfulness_annotator1', 'slang_faithfulness_annotator2',
                'lit_retrieval', 'lit_assumption', 'lit_label', 'lit_raw',
-               'literature_faithfulness_ARI', 'literature_faithfulness_IVANA',
-               'human_preference_ARI', 'human_preference_IVANA']
+               'literature_faithfulness_annotator1', 'literature_faithfulness_annotator2',
+               'human_preference_annotator1', 'human_preference_annotator2']
 
     return df[[c for c in ordered if c in df.columns]]
 
@@ -151,7 +152,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     data_dir = args.data_dir or args.lang
-
     ann = pd.read_excel(args.ann) if args.ann else None
 
     if args.lang == 'it':
